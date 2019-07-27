@@ -1,15 +1,15 @@
 version: '3.5'
 services:
-    nginx:
+    sig_svr:
         image: novice/ss:latest
-        ports:
-            - "57000:57000"
-            - "3478:3478"
-            - target: 49152-65535
-              published: 49152-65535
-              protocol: udp
-              mode: host
-
+        deploy:
+            mode: global
+        networks:
+            - outside
+networks:
+  outside:
+    external: true
+    name: "host"
 
 
 
