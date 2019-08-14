@@ -4,6 +4,9 @@ services:
         image: novice/ss:latest
         deploy:
             mode: global
+        environment:
+            # If you want to change the signaling service listening port
+            - PORT=57000
         networks:
             - outside
 networks:

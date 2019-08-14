@@ -2,7 +2,11 @@
  
  Install docker on your public server, and then run
  ```bash
-    docker run --restart=always -d -p 57000:57000 -p 3478:3478 -p 49152-65535:49152-65535/udp novice/ss
+    # Mapping large range of ports confirmed very slow, so just use host mode
+    #docker run --restart=always -d -p 57000:57000 -p 3478:3478 -p 49152-65535:49152-65535/udp novice/ss
+    # default signaling service port: 57000, use environment variable PORT to change it
+    docker run --restart=always -d -e "PORT=57001" --network="host" --name ss novice/ss
+    # remove the service use: docker rm -f ss
  ```   
  Or run it as a swarm service
  ```bash
