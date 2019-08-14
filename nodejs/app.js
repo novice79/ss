@@ -91,7 +91,13 @@ wss.on('connection', ws => {
                 }
                 case 'send_sig':
                 case 'return_sig': {
-                    peers.get(data.to).ws.send(message);
+                    if(peers.has(data.to) && peers.has(ws.pid)){
+                        data.from = {
+                            id: ws.pid,
+                            ep: peers.get(ws.pid).ep
+                        };
+                        peers.get(data.to).ws.send(JSON.stringify(data));
+                    }                   
                     break;
                 }
 
