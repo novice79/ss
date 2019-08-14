@@ -15,6 +15,8 @@
   "license": "ISC",
   "dependencies": {
     "lodash": "^4.17.15",
+    "log-timestamp": "^0.3.0",
+    "moment": "^2.24.0",
     "ws": "^7.1.1"
   }
 }
