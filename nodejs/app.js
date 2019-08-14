@@ -61,7 +61,7 @@ wss.on('connection', ws => {
     })
     ws.on('message', message => {
         try {
-            console.log(message)
+            // console.log(message)
             const data = JSON.parse(message)
             // console.log(data)
             switch (data.cmd) {
@@ -104,7 +104,7 @@ wss.on('connection', ws => {
                 default: throw 'not support cmd'
             }
         } catch (err) {
-            console.log(JSON.stringify(err) )
+            console.log(`parse ws message error, terminate this. `+JSON.stringify(err) )
             ws.terminate()
         }
     });
