@@ -33,7 +33,7 @@ if (!('toJSON' in Error.prototype)){
     
 const peers = new Map();
 function get_peers_by_size(size = 100) {
-    const chosen = _.sampleSize(peers.keys(), size)
+    const chosen = _.sampleSize( [...peers.keys()], size )
     const ps = _.map(chosen, pid => {
         return {
             id: pid,
