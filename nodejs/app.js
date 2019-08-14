@@ -18,12 +18,10 @@ server.listen(port, () => {
 if (!('toJSON' in Error.prototype)){
     Object.defineProperty(Error.prototype, 'toJSON', {
         value: function () {
-            var alt = {};
-
+            let alt = {};
             Object.getOwnPropertyNames(this).forEach(function (key) {
                 alt[key] = this[key];
             }, this);
-
             return alt;
         },
         configurable: true,
@@ -46,7 +44,6 @@ function get_peers_by_size(size = 100) {
     };
 }
 function send_total(ws) {
-
     // console.log(`peers.size=${peers.size}`)
     ws.send(JSON.stringify({
         cmd: 'total',
@@ -85,6 +82,11 @@ wss.on('connection', ws => {
                     const p = get_peers_by_size(data.amount);
                     p.peers = _.filter(p.peers, p => p.id != ws.pid)
                     ws.send(JSON.stringify(p))
+                    break;
+                }
+                case 'is_it_here': {
+                    data.ret = peers.has(data.pid);
+                    ws.send(JSON.stringify(data))
                     break;
                 }
                 case 'send_sig':
