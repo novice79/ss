@@ -74,6 +74,10 @@ wss.on('connection', ws => {
                         ws,
                         token: data.token
                     });
+                    ws.send(JSON.stringify({
+                        cmd: 'res_peer_online',
+                        token: data.token
+                    }));
                     ws.send(JSON.stringify(ps))
                     broadcast_total()
                     break;
@@ -138,7 +142,7 @@ udp.on('message', (msg, rinfo) => {
             if (peers.has(id)) {
                 const p = peers.get(id);
                 if (p.token == token) {
-                    // console.log(`udp data valid, mark [${id}--${rinfo.address}:${rinfo.port}] alive`)
+                    console.log(`udp data valid, mark [${id}--${rinfo.address}:${rinfo.port}] alive`)
                     p.ep = `${rinfo.address}:${rinfo.port}`
                     p.ws.is_alive = true;
                 }
