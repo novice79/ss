@@ -56,9 +56,9 @@ function broadcast_msg(msg) {
 function broadcast_total() {
     wss.clients.forEach(ws => send_total(ws))
 }
-function random_int(low = 0, high = 4294967295) {
-    return Math.floor(Math.random() * (high - low) + low)
-}
+// function random_int(low = 0, high = 4294967295) {
+//     return Math.floor(Math.random() * (high - low) + low)
+// }
 wss.on('connection', ws => {
     ws.is_alive = true;
     ws.on('close', () => {
@@ -78,7 +78,7 @@ wss.on('connection', ws => {
                         ws.feasible = false;
                         setTimeout(()=>{
                             ws.feasible = true;
-                        }, random_int(30, 120) * 1000)
+                        }, 120 * 1000)
                     } else {
                         ws.send(JSON.stringify({
                             cmd: 'too_quick'
@@ -111,6 +111,12 @@ wss.on('connection', ws => {
                 }
                 case 'is_it_here': {
                     data.ret = peers.has(data.pid);
+                    if(data.ret){
+                        data.info = {
+                            id: data.pid,
+                            ep: peers.get(data.pid).ep
+                        }
+                    }
                     ws.send(JSON.stringify(data))
                     break;
                 }
