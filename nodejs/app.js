@@ -50,8 +50,14 @@ function send_total(ws) {
         total: peers.size
     }));
 }
+function broadcast_msg(msg) {
+    wss.clients.forEach(ws => ws.send(msg) )
+}
 function broadcast_total() {
     wss.clients.forEach(ws => send_total(ws))
+}
+function random_int(low = 0, high = 4294967295) {
+    return Math.floor(Math.random() * (high - low) + low)
 }
 wss.on('connection', ws => {
     ws.is_alive = true;
@@ -65,6 +71,21 @@ wss.on('connection', ws => {
             const data = JSON.parse(message)
             // console.log(data)
             switch (data.cmd) {
+                case 'to_all': {
+                    if(ws.feasible){
+                        // suppose data.from to be sender's nickname, and with content in data.msg
+                        broadcast_msg(message)
+                        ws.feasible = false;
+                        setTimeout(()=>{
+                            ws.feasible = true;
+                        }, random_int(30, 120) * 1000)
+                    } else {
+                        ws.send(JSON.stringify({
+                            cmd: 'too_quick'
+                        }));
+                    }
+                    break;
+                }
                 case 'peer_online': {
                     clearTimeout(ws.idle_tm)
                     const ps = get_peers_by_size();
