@@ -109,15 +109,24 @@ wss.on('connection', ws => {
                     ws.send(JSON.stringify(p))
                     break;
                 }
-                case 'is_it_here': {
-                    data.ret = peers.has(data.pid);
-                    if(data.ret){
-                        data.info = {
-                            id: data.pid,
-                            ep: peers.get(data.pid).ep
+                case 'check_fiends': {
+                    if( Array.isArray(data.friends) ){
+                        // for available friends
+                        let af = data.friends.filter( f=>peers.has(f) )
+                        if(af.length > 0){
+                            af = af.map(f=>{
+                                return {
+                                    id: f,
+                                    ep: peers.get(f).ep
+                                }
+                            });
+                            const ps = {
+                                peers: af,
+                                cmd: 'peers'
+                            }
+                            ws.send(JSON.stringify(ps))
                         }
                     }
-                    ws.send(JSON.stringify(data))
                     break;
                 }
                 case 'send_sig':
