@@ -157,6 +157,7 @@ const interval = setInterval(() => {
     wss.clients.forEach(ws => {
         if (ws.is_alive === false) {
             peers.delete(ws.pid)
+            console.log(`peer ${ws.pid} staled, delete it.`)
             return ws.terminate();
         }
         ws.is_alive = false;
@@ -176,7 +177,7 @@ udp.on('message', (msg, rinfo) => {
         if (msg.readUInt8(0) == 0x18 && msg.length == 37) {
             const id = msg.toString('utf8', 1, 33);
             const token = msg.readUInt32BE(33)
-            console.log(`udp message [id=${id}; token=${token}`)
+            // console.log(`udp message [id=${id}; token=${token}`)
             if (peers.has(id)) {
                 const p = peers.get(id);
                 if (p.token == token) {
