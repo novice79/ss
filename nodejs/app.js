@@ -87,7 +87,8 @@ wss.on('connection', ws => {
                     break;
                 }
                 case 'peer_online': {
-                    clearTimeout(ws.idle_tm)
+                    clearTimeout(ws.idle_tm);
+                    console.log(`peer_online, data.id=${data.id}`)
                     const ps = get_peers_by_size();
                     console.log(ps)
                     ws.pid = data.id;
@@ -172,9 +173,10 @@ udp.on('message', (msg, rinfo) => {
     // console.log(`udp got: ${msg} from ${rinfo.address}:${rinfo.port}`);
     // udp.send('echo from server', rinfo.port, rinfo.address)
     try {
-        if (msg.readUInt8(0) == 0x18 && msg.length == 9) {
-            const id = msg.readInt32BE(1)
-            const token = msg.readUInt32BE(5)
+        if (msg.readUInt8(0) == 0x18 && msg.length == 37) {
+            const id = msg.toString('utf8', 1, 33);
+            const token = msg.readUInt32BE(33)
+            console.log(`udp message [id=${id}; token=${token}`)
             if (peers.has(id)) {
                 const p = peers.get(id);
                 if (p.token == token) {
