@@ -27,17 +27,10 @@ if (!('toJSON' in Error.prototype)){
         configurable: true,
         writable: true
     });
-}
-    
+}    
 const peers = new Map();
 function get_peers_by_size(size = 100) {
     const chosen = _.sampleSize( [...peers.keys()], size )
-    // const ps = _.map(chosen, pid => {
-    //     return {
-    //         id: pid,
-    //         ep: peers.get(pid).ep
-    //     }
-    // })
     return {
         peers: chosen,
         cmd: 'peers'
@@ -106,7 +99,7 @@ wss.on('connection', ws => {
                 }
                 case 'need_peers': {
                     const p = get_peers_by_size(data.amount);
-                    p.peers = _.filter(p.peers, p => p.id != ws.pid)
+                    p.peers = _.filter(p.peers, pid => pid != ws.pid)
                     ws.send(JSON.stringify(p))
                     break;
                 }
@@ -115,12 +108,6 @@ wss.on('connection', ws => {
                         // for available friends
                         let af = data.friends.filter( f=>peers.has(f) )
                         if(af.length > 0){
-                            af = af.map(f=>{
-                                return {
-                                    id: f,
-                                    ep: peers.get(f).ep
-                                }
-                            });
                             const ps = {
                                 peers: af,
                                 cmd: 'peers'
@@ -133,10 +120,7 @@ wss.on('connection', ws => {
                 case 'send_sig':
                 case 'return_sig': {
                     if(peers.has(data.to) && peers.has(ws.pid)){
-                        data.from = {
-                            id: ws.pid,
-                            ep: peers.get(ws.pid).ep
-                        };
+                        data.from = ws.pid;
                         peers.get(data.to).ws.send(JSON.stringify(data));
                     }                   
                     break;
@@ -169,7 +153,6 @@ udp.on('error', (err) => {
     console.log(`server error:\n${err.stack}`);
     // udp.close();
 });
-
 udp.on('message', (msg, rinfo) => {
     // console.log(`udp got: ${msg} from ${rinfo.address}:${rinfo.port}`);
     // udp.send('echo from server', rinfo.port, rinfo.address)
@@ -202,9 +185,7 @@ udp.on('message', (msg, rinfo) => {
         console.log(JSON.stringify(msg) )
         console.log(JSON.stringify(error) )
     }
-
 });
-
 udp.on('listening', () => {
     // const address = udp.address();
     // console.log(`udp server listening ${address.address}:${address.port}`);
