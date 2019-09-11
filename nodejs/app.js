@@ -32,14 +32,14 @@ if (!('toJSON' in Error.prototype)){
 const peers = new Map();
 function get_peers_by_size(size = 100) {
     const chosen = _.sampleSize( [...peers.keys()], size )
-    const ps = _.map(chosen, pid => {
-        return {
-            id: pid,
-            ep: peers.get(pid).ep
-        }
-    })
+    // const ps = _.map(chosen, pid => {
+    //     return {
+    //         id: pid,
+    //         ep: peers.get(pid).ep
+    //     }
+    // })
     return {
-        peers: ps,
+        peers: chosen,
         cmd: 'peers'
     };
 }
@@ -182,7 +182,14 @@ udp.on('message', (msg, rinfo) => {
                 const p = peers.get(id);
                 if (p.token == token) {
                     console.log(`udp data valid, mark [${id}--${rinfo.address}:${rinfo.port}] alive`)
-                    p.ep = `${rinfo.address}:${rinfo.port}`
+                    const r_ep = `${rinfo.address}:${rinfo.port}`;
+                    if(r_ep != p.ep){
+                        p.ep = r_ep;
+                        p.ws.send(JSON.stringify({
+                            cmd: 'your_udp_ep',
+                            ep: r_ep
+                        }));
+                    }                    
                     p.ws.is_alive = true;
                 }
             } else {
