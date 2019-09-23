@@ -11,9 +11,11 @@ const server = https.createServer({
     cert: ssl.crt,
     key: ssl.key
 });
+const TURN_USER = process.env.TURN_USER;
+const TURN_PASS = process.env.TURN_PASS;
 const wss = new WebSocket.Server({ server });
 server.listen(port, () => {
-    console.log(`service listen on ${port}`)
+    console.log(`service listen on ${port}; TURN_USER=${TURN_USER} & TURN_PASS=${TURN_PASS}`)
 });
 if (!('toJSON' in Error.prototype)){
     Object.defineProperty(Error.prototype, 'toJSON', {
@@ -91,7 +93,9 @@ wss.on('connection', ws => {
                     });
                     ws.send(JSON.stringify({
                         cmd: 'res_peer_online',
-                        token: data.token
+                        token: data.token,
+                        TURN_USER,
+                        TURN_PASS
                     }));
                     ws.send(JSON.stringify(ps))
                     broadcast_total()
