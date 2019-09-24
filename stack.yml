@@ -7,6 +7,9 @@ services:
         environment:
             # If you want to change the signaling service listening port
             - PORT=57000
+            # and turnserver account
+            - TURN_USER=piaoyun
+            - TURN_PASS=freego
         networks:
             - outside
 networks:
