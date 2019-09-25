@@ -45,8 +45,10 @@ function send_total(ws) {
         total: peers.size
     }));
 }
-function broadcast_msg(msg) {
-    wss.clients.forEach(ws => ws.send(msg) )
+function broadcast_msg_except(msg, sender) {
+    wss.clients.forEach(ws => {
+        if (sender != ws) ws.send(msg) 
+    });
 }
 function broadcast_total() {
     wss.clients.forEach(ws => send_total(ws))
@@ -69,7 +71,7 @@ wss.on('connection', ws => {
                 case 'to_all': {
                     if(ws.feasible){
                         // suppose data.from to be sender's nickname, and with content in data.msg
-                        broadcast_msg(message)
+                        broadcast_msg_except(message, ws)
                         ws.feasible = false;
                         setTimeout(()=>{
                             ws.feasible = true;
@@ -168,7 +170,7 @@ udp.on('message', (msg, rinfo) => {
             if (peers.has(id)) {
                 const p = peers.get(id);
                 if (p.token == token) {
-                    console.log(`udp data valid, mark [${id}--${rinfo.address}:${rinfo.port}] alive`)
+                    // console.log(`udp data valid, mark [${id}--${rinfo.address}:${rinfo.port}] alive`)
                     const r_ep = `${rinfo.address}:${rinfo.port}`;
                     if(r_ep != p.ep){
                         p.ep = r_ep;
