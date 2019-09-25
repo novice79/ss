@@ -69,10 +69,10 @@ wss.on('connection', ws => {
             // console.log(data)
             switch (data.cmd) {
                 case 'to_all': {
-                    if( !(data.from && data.content && data.content.length < 30) ) return;
+                    if( !(ws.pid && data.content && data.content.length < 30) ) return;
                     if(!ws.cd){
-                        // data.from && data.content
-                        broadcast_msg_except(message, ws)
+                        data.from = ws.pid;
+                        broadcast_msg_except(JSON.stringify(data), ws)
                         ws.cd = true;
                         setTimeout(()=>{
                             ws.cd = false;
