@@ -69,12 +69,13 @@ wss.on('connection', ws => {
             // console.log(data)
             switch (data.cmd) {
                 case 'to_all': {
-                    if(ws.feasible){
-                        // suppose data.from to be sender's nickname, and with content in data.msg
+                    if( !(data.from && data.content && data.content.length < 30) ) return;
+                    if(!ws.cd){
+                        // data.from && data.content
                         broadcast_msg_except(message, ws)
-                        ws.feasible = false;
+                        ws.cd = true;
                         setTimeout(()=>{
-                            ws.feasible = true;
+                            ws.cd = false;
                         }, 120 * 1000)
                     } else {
                         ws.send(JSON.stringify({
