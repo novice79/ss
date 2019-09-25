@@ -161,9 +161,9 @@ udp.on('message', (msg, rinfo) => {
     // console.log(`udp got: ${msg} from ${rinfo.address}:${rinfo.port}`);
     // udp.send('echo from server', rinfo.port, rinfo.address)
     try {
-        if (msg.readUInt8(0) == 0x18 && msg.length == 37) {
-            const id = msg.toString('utf8', 1, 33);
-            const token = msg.readUInt32BE(33)
+        if (msg.length == 36) {
+            const id = msg.toString('utf8', 0, 32);
+            const token = msg.readUInt32BE(32)
             // console.log(`udp message [id=${id}; token=${token}`)
             if (peers.has(id)) {
                 const p = peers.get(id);
@@ -183,7 +183,7 @@ udp.on('message', (msg, rinfo) => {
                 console.log(`peer ${id} not register yet`)
             }
         } else {
-            console.log(`invalid udp data length=${msg.length}`)
+            // console.log(`invalid udp data length=${msg.length}`)
         }
     } catch (error) {
         console.log(JSON.stringify(msg) )
