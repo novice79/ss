@@ -53,9 +53,6 @@ function broadcast_msg_except(msg, sender) {
 function broadcast_total() {
     wss.clients.forEach(ws => send_total(ws))
 }
-// function random_int(low = 0, high = 4294967295) {
-//     return Math.floor(Math.random() * (high - low) + low)
-// }
 wss.on('connection', ws => {
     ws.is_alive = true;
     ws.on('close', () => {
@@ -124,6 +121,8 @@ wss.on('connection', ws => {
                     }
                     break;
                 }
+                case 'req_friend':
+                case 'res_friend': 
                 case 'send_sig':
                 case 'return_sig': {
                     if(peers.has(data.to) && peers.has(ws.pid)){
@@ -132,7 +131,6 @@ wss.on('connection', ws => {
                     }                   
                     break;
                 }
-
                 default: throw 'not support cmd'
             }
         } catch (err) {
@@ -189,8 +187,7 @@ udp.on('message', (msg, rinfo) => {
             // console.log(`invalid udp data length=${msg.length}`)
         }
     } catch (error) {
-        console.log(JSON.stringify(msg) )
-        console.log(JSON.stringify(error) )
+        console.log(`msg=${JSON.stringify(msg)}; error=${JSON.stringify(error)}` )
     }
 });
 udp.on('listening', () => {
