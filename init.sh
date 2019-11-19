@@ -10,5 +10,6 @@ sed -i "s/TURN_ACCOUNT_HERE/user=$TURN_USER:$TURN_PASS/" /etc/turnserver.conf
 turnserver --log-file=stdout --external-ip=$EXTERNAL_IP &
 export TURN_USER TURN_PASS
 log "TRACKER_PORT=${TRACKER_PORT:=2018}"
+export TRACKER_PORT
 /opentracker -p $TRACKER_PORT -P $TRACKER_PORT &
 /app

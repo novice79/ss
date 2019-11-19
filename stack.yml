@@ -7,6 +7,8 @@ services:
         environment:
             # If you want to change the signaling service listening port
             - PORT=57000
+            # change bt-tracker's port
+            - TRACKER_PORT=2018
             # and turnserver account
             - TURN_USER=piaoyun
             - TURN_PASS=freego

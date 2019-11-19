@@ -11,6 +11,8 @@ const server = https.createServer({
     cert: ssl.crt,
     key: ssl.key
 });
+
+const TRACKER_PORT = process.env.TRACKER_PORT;
 const TURN_USER = process.env.TURN_USER;
 const TURN_PASS = process.env.TURN_PASS;
 const wss = new WebSocket.Server({ server });
@@ -95,7 +97,8 @@ wss.on('connection', ws => {
                         cmd: 'res_peer_online',
                         token: data.token,
                         TURN_USER,
-                        TURN_PASS
+                        TURN_PASS,
+                        TRACKER_PORT
                     }));
                     ws.send(JSON.stringify(ps))
                     broadcast_total()
