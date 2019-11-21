@@ -2,6 +2,7 @@ const https = require('https');
 const dgram = require('dgram');
 const WebSocket = require('ws');
 const _ = require('lodash');
+const BT = require('bittorrent-tracker').Server
 // const moment = require('moment');
 // require('log-timestamp')(() => `[${moment().format('YYYY-MM-DD HH:mm:ss SSS')}] %s`);
 const ssl = require('./ssl');
@@ -12,26 +13,17 @@ const server = https.createServer({
     key: ssl.key
 });
 
-const TRACKER_PORT = process.env.TRACKER_PORT;
+const TRACKER_PORT = process.env.TRACKER_PORT || 2018;
 const TURN_USER = process.env.TURN_USER;
 const TURN_PASS = process.env.TURN_PASS;
 const wss = new WebSocket.Server({ server });
+const bt = new BT();
 server.listen(port, () => {
     console.log(`service listen on ${port}; TURN_USER=${TURN_USER} & TURN_PASS=${TURN_PASS}`)
 });
-if (!('toJSON' in Error.prototype)){
-    Object.defineProperty(Error.prototype, 'toJSON', {
-        value: function () {
-            let alt = {};
-            Object.getOwnPropertyNames(this).forEach(function (key) {
-                alt[key] = this[key];
-            }, this);
-            return alt;
-        },
-        configurable: true,
-        writable: true
-    });
-}    
+bt.listen(TRACKER_PORT, ()=>{
+    console.log(`bittorrent-tracker listen on ${TRACKER_PORT};`)
+});
 const peers = new Map();
 function get_peers_by_size(size = 100) {
     const chosen = _.sampleSize( [...peers.keys()], size )

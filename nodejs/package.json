@@ -14,6 +14,7 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "bittorrent-tracker": "^9.14.4",
     "lodash": "^4.17.15",
     "log-timestamp": "^0.3.0",
     "moment": "^2.24.0",

@@ -30,6 +30,24 @@
 
 ### 包含了哪些服务
 1. coturn服务（用于webrtc节点查找自身外网ip）
-2. opentracker（用于bt下载——暂时未用到）
+2. bittorrent-tracker（用于bt下载）
 3. nodejs写的signaling服务（用于webrtc节点间建立连接）
 
+### docker 国内镜像加速
+```
+sudo vi /etc/docker/daemon.json
+<!-- 添加docker国内镜像，例如 -->
+{
+  "registry-mirrors": [
+    "https://dockerhub.azk8s.cn",
+    "https://reg-mirror.qiniu.com",
+    "https://registry.docker-cn.com",
+    "http://hub-mirror.c.163.com",
+    "https://3laho3y3.mirror.aliyuncs.com",
+    "http://f1361db2.m.daocloud.io",
+    "https://mirror.ccs.tencentyun.com"
+  ]
+}
+<!-- 重启docker服务 -->
+sudo systemctl restart docker
+```
